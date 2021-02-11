@@ -1,2 +1,2 @@
-# unity-course
-Some of the course applications
+# project-booster
+A basic rocket ship game with reaction control system thruster mechanics
