@@ -78,7 +78,7 @@ public class Rocket : MonoBehaviour
 
     private void LoadFirstScene()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(2);
     }
 
     private void RespondToThrustInput()
