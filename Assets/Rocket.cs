@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
@@ -15,6 +16,8 @@ public class Rocket : MonoBehaviour
     [SerializeField] ParticleSystem deathParticles;
 
     [SerializeField] float levelLoadDelay = 2f;
+
+    bool collisionsEnabled = true;
 
     Rigidbody rigidBody;
     AudioSource audioSource;
@@ -36,11 +39,25 @@ public class Rocket : MonoBehaviour
             RespondToThrustInput();
             RespondToRotateInput();
         }
+
+        if (Debug.isDebugBuild) {
+            RespondToDebugKeys();
+        }
+    }
+
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L)) {
+            LoadNextScene();
+        }
+        else if (Input.GetKeyDown(KeyCode.C)) {
+            collisionsEnabled = !collisionsEnabled;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) return;
+        if (state != State.Alive || !collisionsEnabled) return;
         
         switch (collision.gameObject.tag)
         {
@@ -73,12 +90,16 @@ public class Rocket : MonoBehaviour
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene(1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+        if (nextSceneIndex == SceneManager.sceneCountInBuildSettings) nextSceneIndex = 0;
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
     private void LoadFirstScene()
     {
-        SceneManager.LoadScene(2);
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 
     private void RespondToThrustInput()
